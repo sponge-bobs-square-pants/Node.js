@@ -1,6 +1,6 @@
 const Task = require('../models/task');
 const asyncWrapper = require('../Middleware/async');
-
+const {createCustomError} = require('../errors/custom-error');
 const getAllTasks = asyncWrapper(async (req, res) => {
         // res.status(200).send('All Items');
         const tasks = await Task.find({});
@@ -21,7 +21,7 @@ const getTask = asyncWrapper(async (req, res) => {
         // console.log(req.params);
         // console.log(req.params.id);
         if(!task){
-            return res.status(404).json({msg:`No task with the id: ${taskID}`})
+            return next(createCustomError(`No task with the id: ${taskID}`, 404));
         }
         res.status(200).json({task});
     
@@ -32,7 +32,7 @@ const updateTask = asyncWrapper(async (req, res) => {
         const {id:taskID} = req.params;
         const task = await Task.findOneAndUpdate({_id:taskID}, req.body, {runValidators:true, new:true, overwrite:true});
         if(!task){
-            return res.status(404).json({msg: `Cant find the task with the id: ${taskID}`});
+            return next(createCustomError(`No task with the id: ${taskID}`, 404));
         }
         res.status(200).json({task});
 });
@@ -42,7 +42,7 @@ const deleteTask = asyncWrapper(async (req, res) => {
         const taskID = req.params.id;
         const task = await Task.findOneAndDelete({_id:taskID});
         if(!task){
-            return res.status(404).json({msg: `Cant find the task with ${taskID} ID to delete.Maybe the task is already deleted `});
+            return next(createCustomError(`Cant find the task with ${taskID} ID to delete.Maybe the task is already deleted`, 404));
         }
         // res.status(200).json({task})
         //for checking in postman we use the above code
