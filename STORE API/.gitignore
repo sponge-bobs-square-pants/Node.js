@@ -1,2 +1,4 @@
 /node_modules
 .env
+/product.json
+/cloudinary.js

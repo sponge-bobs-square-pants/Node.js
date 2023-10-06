@@ -47,8 +47,37 @@ const productSchema = new mongoose.Schema({
     Featured:{
         type:Boolean,
         default:false
+    },
+    Colors:{
+        type:[String]
+    },
+    Reviews:{
+        type:Number,
+        default: 10
+    },
+    Stars:{
+        type:Number,
+        default: 4.5
+    },
+    Stock:{
+        type: Number,
+        required: [true, 'Please enter the no of products']
     }
 
+});
+productSchema.pre('save', function (next) {
+    if (!this.Description) {
+        // Set the default Description value if it's null or undefined
+        this.Description = '"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ';}
+    if (!this.Stars) {
+        // Set the default Description value if it's null or undefined
+        this.Stars = 4.5;
+    }
+    if (!this.Reviews) {
+        // Set the default Description value if it's null or undefined
+        this.Reviews = 10;
+    }
+    next();
 });
 
 module.exports = mongoose.model('Products', productSchema);

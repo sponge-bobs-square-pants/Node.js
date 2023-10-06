@@ -18,16 +18,39 @@ const getAllProducts = async (req, res) => {
     // res.status(200).json({msg: `Products route`});
     // const data = await Product.find({});
     // return res.status(200).json({data})
-    const {Featured,id} = req.query;
+    const {Featured,id, Company, ProductName, sort, page, limit} = req.query;
     const queryObject = {};
-
+    
     if(Featured){
         queryObject.Featured = Featured === 'true' ? true : false
     }
     if(id){
-        queryObject._id = id
+        queryObject._id = id;
     }
-    const data = await Product.find(queryObject);
+    if(Company){
+        queryObject.Company = Company;
+    }
+    if(ProductName){
+        queryObject.ProductName = {$regex: ProductName, $options: 'i'}
+    }
+   
+    let response =  Product.find(queryObject);
+    if(sort){
+        let sortList = sort.split(',').join(' ');
+        
+        response = response.sort(sortList);
+    }
+    else{
+        response = response.sort('Price')
+    }
+    if(page && limit){
+        const parsedPage = Number(page) || 1;
+        const parsedLimit = Number(limit) || 9;
+        const skip = (page - 1) * limit;
+        response = response.skip(skip).limit(limit);
+    
+    }
+    const data = await response
     // console.log(data);
     return res.status(200).json({data, nbHits: data.length});
     }
