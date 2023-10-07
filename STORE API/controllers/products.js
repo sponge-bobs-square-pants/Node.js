@@ -18,7 +18,7 @@ const getAllProducts = async (req, res) => {
     // res.status(200).json({msg: `Products route`});
     // const data = await Product.find({});
     // return res.status(200).json({data})
-    const {Featured,id, Company, ProductName, sort, page, limit} = req.query;
+    const {Featured,id, Company, ProductName, sort, page, limit, Category} = req.query;
     const queryObject = {};
     
     if(Featured){
@@ -29,6 +29,9 @@ const getAllProducts = async (req, res) => {
     }
     if(Company){
         queryObject.Company = Company;
+    }
+    if(Category){
+        queryObject.Category = Category;
     }
     if(ProductName){
         queryObject.ProductName = {$regex: ProductName, $options: 'i'}

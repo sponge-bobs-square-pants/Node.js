@@ -35,8 +35,9 @@ const productSchema = new mongoose.Schema({
     Category:{
         type:String,
         enum:{
-            values:["Nightdress"],
-            message:'{VALUE} is not supported'
+            values:["Nightdress", "Bra"],
+            message:'{VALUE} is not supported',
+            required:[true, 'Category must be provided']
         }
         // enum:["Nightdress"]
     },
